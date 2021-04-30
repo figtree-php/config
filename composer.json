@@ -1,0 +1,32 @@
+{
+	"name": "figtree-php/config",
+	"description": "FigTree Config",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Alan Ondra",
+			"email": "r.alan.ondra@gmail.com",
+			"role": "Creator"
+		}
+	],
+	"support": {
+		"email": "figtree.php@gmail.com",
+		"source": "https://github.com/figtree-php/config",
+		"issues": "https://github.com/figtree-php/config/issues",
+		"wiki": "https://github.com/figtree-php/config/wiki"
+	},
+	"autoload": {
+		"psr-4": {
+			"FigTree\\Config\\": "src/",
+			"FigTree\\Config\\Tests\\": "tests/"
+		}
+	},
+	"require": {
+		"figtree-php/exceptions": "^0 || ^1.0"
+	},
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.6",
+		"phpunit/phpunit": "^9.5"
+	}
+}
