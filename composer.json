@@ -1,6 +1,12 @@
 {
 	"name": "figtree-php/config",
 	"description": "FigTree Config",
+	"keywords": [
+		"figtree",
+		"figtree-php",
+		"config",
+		"configuration"
+	],
 	"type": "library",
 	"license": "MIT",
 	"authors": [
@@ -23,6 +29,7 @@
 		}
 	},
 	"require": {
+		"php": "^8.0",
 		"figtree-php/exceptions": "^0 || ^1.0"
 	},
 	"require-dev": {
