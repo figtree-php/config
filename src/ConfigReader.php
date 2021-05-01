@@ -2,7 +2,9 @@
 
 namespace FigTree\Config;
 
+use Throwable;
 use FigTree\Config\Contracts\ConfigReaderInterface;
+use FigTree\Config\Exceptions\InvalidConfigFileException;
 
 class ConfigReader implements ConfigReaderInterface
 {
@@ -13,6 +15,10 @@ class ConfigReader implements ConfigReaderInterface
 	 */
 	public function read(string $filename): array
 	{
-		return (require $filename);
+		try {
+			return (require $filename);
+		} catch (Throwable $exc) {
+			throw new InvalidConfigFileException($filename, 0, $exc);
+		}
 	}
 }
