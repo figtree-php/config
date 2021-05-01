@@ -127,7 +127,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
 
 		$path = realpath($prefix . $file);
 
-		if (empty($path) || !is_file($path) || !is_readable($path) || !str_starts_with($path, $prefix)) {
+		if (empty($path) || !is_file($path) || !is_readable($path)) {
 			return null;
 		}
 
