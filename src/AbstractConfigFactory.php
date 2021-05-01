@@ -46,7 +46,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
 	 *
 	 * @return $this
 	 */
-	public function addDirectory(string $directory): ConfigFactory
+	public function addDirectory(string $directory): ConfigFactoryInterface
 	{
 		$dir = $this->resolveDirectory($directory);
 
