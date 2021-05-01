@@ -16,6 +16,13 @@
 			"role": "Creator"
 		}
 	],
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/alanondra"
+		}
+	],
+	"readme": "readme.md",
 	"support": {
 		"email": "figtree.php@gmail.com",
 		"source": "https://github.com/figtree-php/config",
