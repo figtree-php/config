@@ -50,7 +50,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
 	{
 		$dir = $this->resolveDirectory($directory);
 
-		$this->directories[] = $directory;
+		$this->directories[] = $dir;
 
 		return $this;
 	}
