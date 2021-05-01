@@ -15,10 +15,20 @@ class ConfigReader implements ConfigReaderInterface
 	 */
 	public function read(string $filename): array
 	{
+		ob_start();
+
 		try {
-			return (require $filename);
+			$data = (require $filename);
 		} catch (Throwable $exc) {
 			throw new InvalidConfigFileException($filename, 0, $exc);
+		} finally {
+			ob_end_clean();
 		}
+
+		if (!is_array($data)) {
+			throw new InvalidConfigFileException($filename);
+		}
+
+		return $data;
 	}
 }
