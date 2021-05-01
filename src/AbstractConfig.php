@@ -121,10 +121,6 @@ abstract class AbstractConfig implements ConfigInterface
 
 		$data = $reader->read($this->fileName);
 
-		if (!is_array($data)) {
-			throw new InvalidConfigFileException($this->fileName);
-		}
-
 		$this->data = $data;
 
 		return $this;
