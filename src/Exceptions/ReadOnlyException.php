@@ -3,23 +3,13 @@
 namespace FigTree\Config\Exceptions;
 
 use Throwable;
-use RuntimeException;
-use FigTree\Exceptions\Contracts\SevereExceptionInterface;
-use FigTree\Exceptions\Concerns\{
-	HasSeverity,
-	SetsLocation
-};
+use FigTree\Exceptions\RuntimeException;
 
 /**
  * Exception thrown when attempting to modify a Config value.
  */
-class ReadOnlyException extends RuntimeException implements SevereExceptionInterface
+class ReadOnlyException extends RuntimeException
 {
-	use HasSeverity;
-	use SetsLocation;
-
-	protected int $severity = E_ERROR;
-
 	/**
 	 * Exception thrown when attempting to modify a Config value.
 	 *

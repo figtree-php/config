@@ -3,23 +3,13 @@
 namespace FigTree\Config\Exceptions;
 
 use Throwable;
-use RuntimeException;
-use FigTree\Exceptions\Contracts\SevereExceptionInterface;
-use FigTree\Exceptions\Concerns\{
-	HasSeverity,
-	SetsLocation
-};
+use FigTree\Exceptions\RuntimeException;
 
 /**
  * Exception thrown when a Config file is invalid or fails to parse.
  */
-class InvalidConfigFileException extends RuntimeException implements SevereExceptionInterface
+class InvalidConfigFileException extends RuntimeException
 {
-	use HasSeverity;
-	use SetsLocation;
-
-	protected int $severity = E_ERROR;
-
 	/**
 	 * Exception thrown when a Config file is invalid or fails to parse.
 	 *
