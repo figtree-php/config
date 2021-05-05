@@ -37,9 +37,9 @@ trait Configurable
 	 *
 	 * @param string $fileName
 	 *
-	 * @return \FigTree\Config\Contracts\ConfigInterface
+	 * @return \FigTree\Config\Contracts\ConfigInterface|null
 	 */
-	protected function config(string $fileName): ConfigInterface
+	protected function config(string $fileName): ?ConfigInterface
 	{
 		return $this->configRepo->get($fileName);
 	}
