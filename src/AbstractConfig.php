@@ -17,12 +17,15 @@ abstract class AbstractConfig implements ConfigInterface
 {
 	use ArrayAccessData;
 
+	/**
+	 * Paths of underlying Config files.
+	 */
 	protected array $paths = [];
 
 	/**
-	 * Get the name of the underlying Config file.
+	 * Get the paths of the underlying Config files.
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function getPaths(): array
 	{
@@ -77,7 +80,8 @@ abstract class AbstractConfig implements ConfigInterface
 	}
 
 	/**
-	 * Set the resolved filename of the Config file and read in its data.
+	 * Resolve the given filename of a Config file, add it to the
+	 * array of files, and read in its data.
 	 *
 	 * @param string $fileName
 	 *

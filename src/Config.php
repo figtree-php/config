@@ -8,6 +8,9 @@ use FigTree\Config\Contracts\{
 
 class Config extends AbstractConfig
 {
+	/**
+	 * Construct an instance of Config.
+	 */
 	public function __construct(array $paths)
 	{
 		foreach ($paths as $path) {

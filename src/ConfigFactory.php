@@ -3,8 +3,9 @@
 namespace FigTree\Config;
 
 use FigTree\Config\Contracts\ConfigInterface;
+use FigTree\Config\Contracts\ConfigFactoryInterface;
 
-class ConfigFactory extends AbstractConfigFactory
+class ConfigFactory implements ConfigFactoryInterface
 {
 	/**
 	 * Create a Config instance.

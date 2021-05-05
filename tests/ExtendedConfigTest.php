@@ -7,7 +7,6 @@ use DateTime;
 use FigTree\Config\{
 	Contracts\ConfigFactoryInterface,
 	Contracts\ConfigInterface,
-	AbstractConfigFactory,
 	AbstractConfig,
 	ConfigRepository,
 };
@@ -29,7 +28,6 @@ class ExtendedConfigTest extends AbstractTestCase
 		$factory = new ExtendedConfigFactory($timestamp);
 
 		$this->assertInstanceOf(ConfigFactoryInterface::class, $factory);
-		$this->assertInstanceOf(AbstractConfigFactory::class, $factory);
 		$this->assertInstanceOf(ExtendedConfigFactory::class, $factory);
 
 		$repo = new ConfigRepository($factory);

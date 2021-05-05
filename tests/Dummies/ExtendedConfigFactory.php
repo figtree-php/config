@@ -3,10 +3,10 @@
 namespace FigTree\Config\Tests\Dummies;
 
 use DateTime;
-use FigTree\Config\AbstractConfigFactory;
+use FigTree\Config\ConfigFactory;
 use FigTree\Config\Contracts\ConfigInterface;
 
-class ExtendedConfigFactory extends AbstractConfigFactory
+class ExtendedConfigFactory extends ConfigFactory
 {
 	public function __construct(public DateTime $timestamp)
 	{

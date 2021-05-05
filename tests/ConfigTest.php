@@ -13,7 +13,6 @@ use FigTree\Config\{
 	Contracts\ConfigFactoryInterface,
 	Contracts\ConfigRepositoryInterface,
 	AbstractConfig,
-	AbstractConfigFactory,
 	AbstractConfigRepository,
 	Config,
 	ConfigFactory,
@@ -30,7 +29,6 @@ class ConfigTest extends AbstractTestCase
 		$factory = new ConfigFactory();
 
 		$this->assertInstanceOf(ConfigFactoryInterface::class, $factory);
-		$this->assertInstanceOf(AbstractConfigFactory::class, $factory);
 
 		$repo = new ConfigRepository($factory);
 
