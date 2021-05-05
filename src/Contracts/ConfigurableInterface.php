@@ -2,14 +2,14 @@
 
 namespace FigTree\Config\Contracts;
 
-use FigTree\Config\ConfigFactory;
-
 interface ConfigurableInterface
 {
 	/**
-	 * Set the ConfigFactory instance.
+	 * Set the Config instance.
 	 *
-	 * @param \FigTree\Config\ConfigFactory $configFactory
+	 * @param \FigTree\Config\Contracts\ConfigRepositoryInterface $configRepo
+	 *
+	 * @return $this
 	 */
-	public function setConfigFactory(ConfigFactory $configFactory);
+	public function setConfigRepository(ConfigRepositoryInterface $configRepo);
 }

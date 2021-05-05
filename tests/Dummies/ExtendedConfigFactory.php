@@ -3,10 +3,10 @@
 namespace FigTree\Config\Tests\Dummies;
 
 use DateTime;
-use FigTree\Config\AbstractConfigFactory;
+use FigTree\Config\ConfigFactory;
 use FigTree\Config\Contracts\ConfigInterface;
 
-class ExtendedConfigFactory extends AbstractConfigFactory
+class ExtendedConfigFactory extends ConfigFactory
 {
 	public function __construct(public DateTime $timestamp)
 	{
@@ -16,12 +16,12 @@ class ExtendedConfigFactory extends AbstractConfigFactory
 	/**
 	 * Create a Config instance.
 	 *
-	 * @param string $path
+	 * @param array $paths
 	 *
 	 * @return \FigTree\Config\Contracts\ConfigInterface
 	 */
-	public function create(string $path): ConfigInterface
+	public function create(array $paths): ConfigInterface
 	{
-		return new ExtendedConfig($this->timestamp, $path);
+		return new ExtendedConfig($this->timestamp, $paths);
 	}
 }

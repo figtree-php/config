@@ -3,17 +3,25 @@
 namespace FigTree\Config\Contracts;
 
 use ArrayAccess;
+use IteratorAggregate;
 use JsonSerializable;
 use Stringable;
 
-interface ConfigInterface extends ArrayAccess, JsonSerializable, Stringable
+interface ConfigInterface extends ArrayAccess, IteratorAggregate, JsonSerializable, Stringable
 {
 	/**
-	 * Get the name of the underlying Config file.
+	 * Get the paths of the associated files.
 	 *
-	 * @return string
+	 * @return array
 	 */
-	public function getFileName(): string;
+	public function getPaths(): array;
+
+	/**
+	 * Convert the object into an array.
+	 *
+	 * @return array
+	 */
+	public function toArray(): array;
 
 	/**
 	 * Convert the object into JSON.

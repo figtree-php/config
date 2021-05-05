@@ -2,28 +2,31 @@
 
 namespace FigTree\Config\Concerns;
 
-use FigTree\Config\ConfigFactory;
-use FigTree\Config\Contracts\ConfigInterface;
+use FigTree\Config\Contracts\{
+	ConfigRepositoryInterface,
+	ConfigInterface,
+	ConfigurableInterface,
+};
 
 trait Configurable
 {
 	/**
-	 * ConfigFactory instance.
+	 * ConfigRepository instance.
 	 *
-	 * @var \FigTree\Config\ConfigFactory
+	 * @var \FigTree\Config\Contracts\ConfigRepositoryInterface
 	 */
-	protected ConfigFactory $configFactory;
+	protected ConfigRepositoryInterface $configRepo;
 
 	/**
 	 * Set the Config instance.
 	 *
-	 * @param \FigTree\Config\ConfigFactory $configFactory
+	 * @param \FigTree\Config\Contracts\ConfigRepositoryInterface $configRepo
 	 *
 	 * @return $this
 	 */
-	public function setConfigFactory(ConfigFactory $configFactory)
+	public function setConfigRepository(ConfigRepositoryInterface $configRepo)
 	{
-		$this->configFactory = $configFactory;
+		$this->configRepo = $configRepo;
 
 		return $this;
 	}
@@ -34,10 +37,10 @@ trait Configurable
 	 *
 	 * @param string $fileName
 	 *
-	 * @return \FigTree\Config\Config
+	 * @return \FigTree\Config\Contracts\ConfigInterface
 	 */
 	protected function config(string $fileName): ConfigInterface
 	{
-		return $this->configFactory->get($fileName);
+		return $this->configRepo->get($fileName);
 	}
 }

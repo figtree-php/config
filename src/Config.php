@@ -10,12 +10,12 @@ class Config extends AbstractConfig
 {
 	/**
 	 * Construct an instance of Config.
-	 *
-	 * @param string $fileName
 	 */
-	public function __construct(string $fileName)
+	public function __construct(array $paths)
 	{
-		$this->setFileName($fileName);
+		foreach ($paths as $path) {
+			$this->addPath($path);
+		}
 	}
 
 	/**

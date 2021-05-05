@@ -1,7 +1,7 @@
 # FigTree Config
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/figtree-php/config)](https://packagist.org/packages/figtree-php/config)
-[![License](https://img.shields.io/packagist/l/figtree-php/config)](https://github.com/figtree-php/config/blob/dev/license.txt)
+[![License](https://img.shields.io/packagist/l/figtree-php/config)](https://github.com/figtree-php/config/blob/master/license.txt)
 [![Build Status](https://scrutinizer-ci.com/g/figtree-php/config/badges/build.png?b=master)](https://scrutinizer-ci.com/g/figtree-php/config/build-status/master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/figtree-php/config/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![Total Downloads](https://img.shields.io/packagist/dt/figtree-php/config)](https://packagist.org/packages/figtree-php/config)

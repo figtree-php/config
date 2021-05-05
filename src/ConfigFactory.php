@@ -3,18 +3,19 @@
 namespace FigTree\Config;
 
 use FigTree\Config\Contracts\ConfigInterface;
+use FigTree\Config\Contracts\ConfigFactoryInterface;
 
-class ConfigFactory extends AbstractConfigFactory
+class ConfigFactory implements ConfigFactoryInterface
 {
 	/**
 	 * Create a Config instance.
 	 *
-	 * @param string $path
+	 * @param array $paths
 	 *
 	 * @return \FigTree\Config\Contracts\ConfigInterface
 	 */
-	public function create(string $path): ConfigInterface
+	public function create(array $paths): ConfigInterface
 	{
-		return new Config($path);
+		return new Config($paths);
 	}
 }

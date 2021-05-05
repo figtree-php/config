@@ -3,18 +3,24 @@
 namespace FigTree\Config;
 
 use FigTree\Exceptions\{
-	InvalidDirectoryException,
 	InvalidPathException,
+	InvalidDirectoryException,
 	UnreadablePathException,
 };
-use FigTree\Config\Exceptions\InvalidConfigFilePathException;
 use FigTree\Config\Contracts\{
-	ConfigInterface,
+	ConfigRepositoryInterface,
 	ConfigFactoryInterface,
+	ConfigInterface,
+};
+use FigTree\Config\Exceptions\{
+    InvalidConfigFileException,
+    InvalidConfigFilePathException,
 };
 
-abstract class AbstractConfigFactory implements ConfigFactoryInterface
+abstract class AbstractConfigRepository implements ConfigRepositoryInterface
 {
+	protected ConfigFactoryInterface $factory;
+
 	/**
 	 * Config file directories.
 	 *
@@ -46,7 +52,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
 	 *
 	 * @return $this
 	 */
-	public function addDirectory(string $directory): ConfigFactoryInterface
+	public function addDirectory(string $directory): ConfigRepositoryInterface
 	{
 		$dir = $this->resolveDirectory($directory);
 
@@ -61,23 +67,45 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
 	 *
 	 * @param string $fileName
 	 *
-	 * @return \FigTree\Config\Contracts\ConfigInterface|null
+	 * @return \FigTree\Config\Contracts\ConfigInterface
+	 *
+	 * @throws \FigTree\Config\Exceptions\InvalidConfigFileException
 	 */
-	public function get(string $fileName): ?ConfigInterface
+	public function get(string $fileName): ConfigInterface
 	{
 		if (key_exists($fileName, $this->configs)) {
 			return $this->configs[$fileName];
 		}
 
+		$paths = $this->search($fileName);
+
+		if (empty($paths)) {
+			throw new InvalidConfigFileException($fileName);
+		}
+
+		return $this->configs[$fileName] = $this->factory->create($paths);
+	}
+
+	/**
+	 * Find all instances of the given file within configured directories.
+	 *
+	 * @param string $fileName
+	 *
+	 * @return array
+	 */
+	protected function search(string $fileName): array
+	{
+		$paths = [];
+
 		foreach ($this->directories as $directory) {
 			$fullPath = $this->resolveFile($directory, $fileName . '.php');
 
 			if (!empty($fullPath)) {
-				return ($this->configs[$fileName] = $this->create($fullPath));
+				$paths[] = $fullPath;
 			}
 		}
 
-		return null;
+		return $paths;
 	}
 
 	/**
