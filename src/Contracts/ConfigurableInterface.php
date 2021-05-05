@@ -11,5 +11,5 @@ interface ConfigurableInterface
 	 *
 	 * @return $this
 	 */
-	public function setConfigRepository(ConfigRepositoryInterface $configRepo): ConfigurableInterface;
+	public function setConfigRepository(ConfigRepositoryInterface $configRepo);
 }

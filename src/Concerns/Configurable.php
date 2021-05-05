@@ -24,7 +24,7 @@ trait Configurable
 	 *
 	 * @return $this
 	 */
-	public function setConfigRepository(ConfigRepositoryInterface $configRepo): ConfigurableInterface
+	public function setConfigRepository(ConfigRepositoryInterface $configRepo)
 	{
 		$this->configRepo = $configRepo;
 
