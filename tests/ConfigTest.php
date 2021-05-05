@@ -18,6 +18,8 @@ use FigTree\Config\{
 	ConfigFactory,
 	ConfigRepository,
 };
+use FigTree\Config\Contracts\ConfigurableInterface;
+use FigTree\Config\Tests\Dummies\ConfigurableClass;
 
 class ConfigTest extends AbstractTestCase
 {
@@ -253,5 +255,21 @@ class ConfigTest extends AbstractTestCase
 		$this->assertEquals('slj', $server['username']);
 		$this->assertEquals('sn@kes on a Plane!', $server['password']);
 		$this->assertEquals(2, $server['version']);
+	}
+
+	public function testConfigurable()
+	{
+		$factory = new ConfigFactory();
+
+		$repo = new ConfigRepository($factory);
+
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
+		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');
+
+		$configurable = new ConfigurableClass($repo);
+
+		$this->assertInstanceOf(ConfigurableInterface::class, $configurable);
+
+		$this->assertEquals('new', $configurable->getName());
 	}
 }
