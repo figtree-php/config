@@ -26,9 +26,7 @@ interface ConfigRepositoryInterface
 	 *
 	 * @param string $fileName
 	 *
-	 * @return \FigTree\Config\Contracts\ConfigInterface
-	 *
-	 * @throws \FigTree\Config\Exceptions\InvalidConfigFileException
+	 * @return \FigTree\Config\Contracts\ConfigInterface|null
 	 */
-	public function get(string $fileName): ConfigInterface;
+	public function get(string $fileName): ?ConfigInterface;
 }

@@ -66,7 +66,7 @@ class ConfigTest extends AbstractTestCase
 	/**
 	 * @small
 	 */
-	public function testConfigFactoryInvalidPath()
+	public function testConfigRepositoryInvalidPath()
 	{
 		$factory = new ConfigFactory();
 
@@ -75,6 +75,22 @@ class ConfigTest extends AbstractTestCase
 		$this->expectException(InvalidPathException::class);
 
 		$repo->addDirectory('foo');
+	}
+
+	/**
+	 * @small
+	 */
+	public function testConfigMissing()
+	{
+		$factory = new ConfigFactory();
+
+		$repo = new ConfigRepository($factory);
+
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
+
+		$config = $repo->get('fake');
+
+		$this->assertNull($config);
 	}
 
 	/**

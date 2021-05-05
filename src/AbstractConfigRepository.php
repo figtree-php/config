@@ -67,11 +67,9 @@ abstract class AbstractConfigRepository implements ConfigRepositoryInterface
 	 *
 	 * @param string $fileName
 	 *
-	 * @return \FigTree\Config\Contracts\ConfigInterface
-	 *
-	 * @throws \FigTree\Config\Exceptions\InvalidConfigFileException
+	 * @return \FigTree\Config\Contracts\ConfigInterface|null
 	 */
-	public function get(string $fileName): ConfigInterface
+	public function get(string $fileName): ?ConfigInterface
 	{
 		if (key_exists($fileName, $this->configs)) {
 			return $this->configs[$fileName];
@@ -80,7 +78,7 @@ abstract class AbstractConfigRepository implements ConfigRepositoryInterface
 		$paths = $this->search($fileName);
 
 		if (empty($paths)) {
-			throw new InvalidConfigFileException($fileName);
+			return null;
 		}
 
 		return $this->configs[$fileName] = $this->factory->create($paths);
