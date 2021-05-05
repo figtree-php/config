@@ -11,6 +11,7 @@ class ExtendedConfig extends AbstractConfig
 	/**
 	 * Construct an instance of Config.
 	 *
+	 * @param \DateTime $timestamp
 	 * @param string $fileName
 	 */
 	public function __construct(public DateTime $timestamp, string $fileName)
