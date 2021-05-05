@@ -77,6 +77,24 @@ abstract class AbstractConfigRepository implements ConfigRepositoryInterface
 			return $this->configs[$fileName];
 		}
 
+		$paths = $this->search($fileName);
+
+		if (empty($paths)) {
+			throw new InvalidConfigFileException($fileName);
+		}
+
+		return $this->configs[$fileName] = $this->factory->create($paths);
+	}
+
+	/**
+	 * Find all instances of the given file within configured directories.
+	 *
+	 * @param string $fileName
+	 *
+	 * @return array
+	 */
+	protected function search(string $fileName): array
+	{
 		$paths = [];
 
 		foreach ($this->directories as $directory) {
@@ -87,11 +105,7 @@ abstract class AbstractConfigRepository implements ConfigRepositoryInterface
 			}
 		}
 
-		if (empty($paths)) {
-			throw new InvalidConfigFileException($fileName);
-		}
-
-		return $this->configs[$fileName] = $this->factory->create($paths);
+		return $paths;
 	}
 
 	/**
