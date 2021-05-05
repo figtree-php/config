@@ -12,10 +12,7 @@ use FigTree\Config\Contracts\{
 	ConfigFactoryInterface,
 	ConfigInterface,
 };
-use FigTree\Config\Exceptions\{
-    InvalidConfigFileException,
-    InvalidConfigFilePathException,
-};
+use FigTree\Config\Exceptions\InvalidConfigFilePathException;
 
 abstract class AbstractConfigRepository implements ConfigRepositoryInterface
 {

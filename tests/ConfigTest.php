@@ -54,9 +54,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testConfigRepositoryInvalidDirectory()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$this->expectException(InvalidDirectoryException::class);
 
@@ -68,9 +66,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testConfigRepositoryInvalidPath()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$this->expectException(InvalidPathException::class);
 
@@ -82,9 +78,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testConfigMissing()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 
@@ -98,9 +92,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testConfigInvalid()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 
@@ -114,9 +106,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testConfigOutOfBounds()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 
@@ -151,9 +141,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testConfigRepositoryGet()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');
@@ -217,9 +205,7 @@ class ConfigTest extends AbstractTestCase
 	 */
 	public function testMergedConfig()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');
@@ -275,9 +261,7 @@ class ConfigTest extends AbstractTestCase
 
 	public function testConfigurable()
 	{
-		$factory = new ConfigFactory();
-
-		$repo = new ConfigRepository($factory);
+		$repo = ConfigRepository::create();
 
 		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');

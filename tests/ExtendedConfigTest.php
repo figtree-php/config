@@ -13,7 +13,6 @@ use FigTree\Config\{
 use FigTree\Config\Tests\Dummies\{
 	ExtendedConfigFactory,
 	ExtendedConfig,
-	ExtendedConfigReader,
 };
 
 class ExtendedConfigTest extends AbstractTestCase
