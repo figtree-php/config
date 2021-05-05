@@ -16,12 +16,12 @@ class ExtendedConfigFactory extends AbstractConfigFactory
 	/**
 	 * Create a Config instance.
 	 *
-	 * @param string $path
+	 * @param array $paths
 	 *
 	 * @return \FigTree\Config\Contracts\ConfigInterface
 	 */
-	public function create(string $path): ConfigInterface
+	public function create(array $paths): ConfigInterface
 	{
-		return new ExtendedConfig($this->timestamp, $path);
+		return new ExtendedConfig($this->timestamp, $paths);
 	}
 }

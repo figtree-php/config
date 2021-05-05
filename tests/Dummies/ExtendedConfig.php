@@ -12,11 +12,13 @@ class ExtendedConfig extends AbstractConfig
 	 * Construct an instance of Config.
 	 *
 	 * @param \DateTime $timestamp
-	 * @param string $fileName
+	 * @param array $paths
 	 */
-	public function __construct(public DateTime $timestamp, string $fileName)
+	public function __construct(public DateTime $timestamp, array $paths)
 	{
-		$this->setFileName($fileName);
+		foreach ($paths as $path) {
+			$this->addPath($path);
+		}
 	}
 
 	/**

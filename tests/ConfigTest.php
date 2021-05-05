@@ -11,10 +11,13 @@ use FigTree\Config\{
 	Exceptions\InvalidConfigFilePathException,
 	Contracts\ConfigInterface,
 	Contracts\ConfigFactoryInterface,
+	Contracts\ConfigRepositoryInterface,
 	AbstractConfig,
 	AbstractConfigFactory,
+	AbstractConfigRepository,
 	Config,
 	ConfigFactory,
+	ConfigRepository,
 };
 
 class ConfigTest extends AbstractTestCase
@@ -22,18 +25,22 @@ class ConfigTest extends AbstractTestCase
 	/**
 	 * @small
 	 */
-	public function testConfigFactory()
+	public function testConfigRepository()
 	{
 		$factory = new ConfigFactory();
 
 		$this->assertInstanceOf(ConfigFactoryInterface::class, $factory);
 		$this->assertInstanceOf(AbstractConfigFactory::class, $factory);
-		$this->assertInstanceOf(ConfigFactory::class, $factory);
 
-		$factory->addDirectory(__DIR__ . '/Data/Config/Alpha');
-		$factory->addDirectory(__DIR__ . '/Data/Config/Beta');
+		$repo = new ConfigRepository($factory);
 
-		$directories = $factory->getDirectories();
+		$this->assertInstanceOf(ConfigRepositoryInterface::class, $repo);
+		$this->assertInstanceOf(AbstractConfigRepository::class, $repo);
+
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
+		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');
+
+		$directories = $repo->getDirectories();
 
 		$this->assertIsArray($directories);
 		$this->assertCount(2, $directories);
@@ -45,13 +52,15 @@ class ConfigTest extends AbstractTestCase
 	/**
 	 * @small
 	 */
-	public function testConfigFactoryInvalidDirectory()
+	public function testConfigRepositoryInvalidDirectory()
 	{
 		$factory = new ConfigFactory();
 
+		$repo = new ConfigRepository($factory);
+
 		$this->expectException(InvalidDirectoryException::class);
 
-		$factory->addDirectory(__FILE__);
+		$repo->addDirectory(__FILE__);
 	}
 
 	/**
@@ -61,9 +70,11 @@ class ConfigTest extends AbstractTestCase
 	{
 		$factory = new ConfigFactory();
 
+		$repo = new ConfigRepository($factory);
+
 		$this->expectException(InvalidPathException::class);
 
-		$factory->addDirectory('foo');
+		$repo->addDirectory('foo');
 	}
 
 	/**
@@ -73,11 +84,13 @@ class ConfigTest extends AbstractTestCase
 	{
 		$factory = new ConfigFactory();
 
-		$factory->addDirectory(__DIR__ . '/Data/Config/Alpha');
+		$repo = new ConfigRepository($factory);
+
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 
 		$this->expectException(InvalidConfigFileException::class);
 
-		$factory->get('invalid');
+		$repo->get('invalid');
 	}
 
 	/**
@@ -87,11 +100,13 @@ class ConfigTest extends AbstractTestCase
 	{
 		$factory = new ConfigFactory();
 
-		$factory->addDirectory(__DIR__ . '/Data/Config/Alpha');
+		$repo = new ConfigRepository($factory);
+
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
 
 		$this->expectException(InvalidConfigFilePathException::class);
 
-		$factory->get('../oob');
+		$repo->get('../oob');
 	}
 
 	/**
@@ -101,32 +116,41 @@ class ConfigTest extends AbstractTestCase
 	{
 		$factory = new ConfigFactory();
 
-		$config = $factory->create(__DIR__ . '/Data/Config/Alpha/foo.php');
+		$config = $factory->create([
+			__DIR__ . '/Data/Config/Alpha/foo.php'
+		]);
 
 		$this->assertInstanceOf(ConfigInterface::class, $config);
 		$this->assertInstanceOf(AbstractConfig::class, $config);
 		$this->assertInstanceOf(Config::class, $config);
 
-		$this->assertEquals($this->path(__DIR__, 'Data', 'Config', 'Alpha', 'foo.php'), $config->getFileName());
+		$paths = $config->getPaths();
+
+		$this->assertCount(1, $paths);
+		$this->assertEquals($this->path(__DIR__, 'Data', 'Config', 'Alpha', 'foo.php'), $paths[0]);
 	}
 
 	/**
 	 * @small
 	 */
-	public function testConfigFactoryGet()
+	public function testConfigRepositoryGet()
 	{
 		$factory = new ConfigFactory();
 
-		$factory->addDirectory(__DIR__ . '/Data/Config/Alpha');
-		$factory->addDirectory(__DIR__ . '/Data/Config/Beta');
+		$repo = new ConfigRepository($factory);
 
-		$config = $factory->get('oof');
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
+		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');
+
+		$config = $repo->get('oof');
 
 		$this->assertInstanceOf(ConfigInterface::class, $config);
 		$this->assertInstanceOf(AbstractConfig::class, $config);
 		$this->assertInstanceOf(Config::class, $config);
 
-		$this->assertEquals($this->path(__DIR__, 'Data', 'Config', 'Beta', 'oof.php'), $config->getFileName());
+		$paths = $config->getPaths();
+
+		$this->assertEquals($this->path(__DIR__, 'Data', 'Config', 'Beta', 'oof.php'), $paths[0]);
 
 		$this->assertEquals('Service Name', $config['name']);
 		$this->assertEquals('main', $config['server']);
@@ -170,5 +194,66 @@ class ConfigTest extends AbstractTestCase
 		$this->assertArrayHasKey('secure', $alt);
 		$this->assertIsBool($alt['secure']);
 		$this->assertEquals(true, $alt['secure']);
+	}
+
+	/**
+	 * @small
+	 */
+	public function testMergedConfig()
+	{
+		$factory = new ConfigFactory();
+
+		$repo = new ConfigRepository($factory);
+
+		$repo->addDirectory(__DIR__ . '/Data/Config/Alpha');
+		$repo->addDirectory(__DIR__ . '/Data/Config/Beta');
+
+		$config = $repo->get('bar');
+
+		$this->assertEquals('new', $config['name']);
+
+		$this->assertArrayHasKey('alpha', $config);
+
+		$alpha = $config['alpha'];
+		$this->assertArrayHasKey('colors', $alpha);
+		$this->assertIsArray($alpha['colors']);
+
+		$this->assertArrayHasKey('beta', $config);
+
+		$beta = $config['beta'];
+		$this->assertArrayHasKey('shapes', $beta);
+		$this->assertIsArray($beta['shapes']);
+
+		$this->assertArrayHasKey('servers', $config);
+
+		$servers = $config['servers'];
+		$this->assertCount(3, $servers);
+
+		$server = $servers[0];
+
+		$this->assertEquals('https://service.net', $server['host']);
+		$this->assertEquals(443, $server['port']);
+		$this->assertEquals('/api', $server['path']);
+		$this->assertEquals('username', $server['username']);
+		$this->assertEquals('This is my password, actually.', $server['password']);
+		$this->assertEquals(1, $server['version']);
+
+		$server = $servers[1];
+
+		$this->assertEquals('https://service.net', $server['host']);
+		$this->assertEquals(443, $server['port']);
+		$this->assertEquals('/api', $server['path']);
+		$this->assertEquals('username', $server['username']);
+		$this->assertEquals('This is my password, actually.', $server['password']);
+		$this->assertEquals(2, $server['version']);
+
+		$server = $servers[2];
+
+		$this->assertEquals('https://service.org', $server['host']);
+		$this->assertEquals(443, $server['port']);
+		$this->assertEquals('/api', $server['path']);
+		$this->assertEquals('slj', $server['username']);
+		$this->assertEquals('sn@kes on a Plane!', $server['password']);
+		$this->assertEquals(2, $server['version']);
 	}
 }

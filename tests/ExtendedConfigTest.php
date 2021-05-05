@@ -9,6 +9,7 @@ use FigTree\Config\{
 	Contracts\ConfigInterface,
 	AbstractConfigFactory,
 	AbstractConfig,
+	ConfigRepository,
 };
 use FigTree\Config\Tests\Dummies\{
 	ExtendedConfigFactory,
@@ -31,9 +32,11 @@ class ExtendedConfigTest extends AbstractTestCase
 		$this->assertInstanceOf(AbstractConfigFactory::class, $factory);
 		$this->assertInstanceOf(ExtendedConfigFactory::class, $factory);
 
-		$factory->addDirectory(__DIR__ . '/Data/Config/Extended');
+		$repo = new ConfigRepository($factory);
 
-		$directories = $factory->getDirectories();
+		$repo->addDirectory(__DIR__ . '/Data/Config/Extended');
+
+		$directories = $repo->getDirectories();
 
 		$this->assertIsArray($directories);
 		$this->assertCount(1, $directories);
@@ -49,9 +52,11 @@ class ExtendedConfigTest extends AbstractTestCase
 
 		$factory = new ExtendedConfigFactory($today);
 
-		$factory->addDirectory(__DIR__ . '/Data/Config/Extended');
+		$repo = new ConfigRepository($factory);
 
-		$config = $factory->get('file');
+		$repo->addDirectory(__DIR__ . '/Data/Config/Extended');
+
+		$config = $repo->get('file');
 
 		$this->assertInstanceOf(ConfigInterface::class, $config);
 		$this->assertInstanceOf(AbstractConfig::class, $config);

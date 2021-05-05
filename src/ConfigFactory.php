@@ -9,12 +9,12 @@ class ConfigFactory extends AbstractConfigFactory
 	/**
 	 * Create a Config instance.
 	 *
-	 * @param string $path
+	 * @param array $paths
 	 *
 	 * @return \FigTree\Config\Contracts\ConfigInterface
 	 */
-	public function create(string $path): ConfigInterface
+	public function create(array $paths): ConfigInterface
 	{
-		return new Config($path);
+		return new Config($paths);
 	}
 }

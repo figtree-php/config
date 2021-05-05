@@ -17,16 +17,16 @@ abstract class AbstractConfig implements ConfigInterface
 {
 	use ArrayAccessData;
 
-	protected string $fileName;
+	protected array $paths = [];
 
 	/**
 	 * Get the name of the underlying Config file.
 	 *
 	 * @return string
 	 */
-	public function getFileName(): string
+	public function getPaths(): array
 	{
-		return $this->fileName;
+		return $this->paths;
 	}
 
 	/**
@@ -86,7 +86,7 @@ abstract class AbstractConfig implements ConfigInterface
 	 * @throws \FigTree\Exceptions\InvalidPathException
 	 * @throws \FigTree\Exceptions\InvalidFileException
 	 */
-	protected function setFileName(string $fileName)
+	protected function addPath(string $fileName): ConfigInterface
 	{
 		$path = realpath($fileName);
 
@@ -98,30 +98,32 @@ abstract class AbstractConfig implements ConfigInterface
 			throw new InvalidFileException($path);
 		}
 
-		$this->fileName = $path;
+		$this->paths[] = $path;
 
-		return $this->readData();
+		return $this->readData($path);
 	}
 
 	/**
 	 * Read the result of the Config file into the object's data.
+	 *
+	 * @param string $path
 	 *
 	 * @return $this
 	 *
 	 * @throws \FigTree\Exceptions\UnreadablePathException
 	 * @throws \FigTree\Config\Exceptions\InvalidConfigFileException
 	 */
-	protected function readData(): ConfigInterface
+	protected function readData(string $path): ConfigInterface
 	{
-		if (!is_readable($this->fileName)) {
-			throw new UnreadablePathException($this->fileName);
+		if (!is_readable($path)) {
+			throw new UnreadablePathException($path);
 		}
 
 		$reader = $this->createReader();
 
-		$data = $reader->read($this->fileName);
+		$data = $reader->read($path);
 
-		$this->data = $data;
+		$this->data = array_replace_recursive($this->data, $data);
 
 		return $this;
 	}
