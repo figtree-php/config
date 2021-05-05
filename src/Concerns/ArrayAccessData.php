@@ -2,6 +2,8 @@
 
 namespace FigTree\Config\Concerns;
 
+use ArrayIterator;
+use Traversable;
 use FigTree\Config\Exceptions\{
 	ReadOnlyException,
 };
@@ -71,5 +73,15 @@ trait ArrayAccessData
 	public function toArray(): array
 	{
 		return $this->data;
+	}
+
+	/**
+	 * Retrieve an external iterator.
+	 *
+	 * @return \Traversable
+	 */
+	public function getIterator(): Traversable
+	{
+		return new ArrayIterator($this->data);
 	}
 }

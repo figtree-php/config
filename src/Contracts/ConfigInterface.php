@@ -3,10 +3,11 @@
 namespace FigTree\Config\Contracts;
 
 use ArrayAccess;
+use IteratorAggregate;
 use JsonSerializable;
 use Stringable;
 
-interface ConfigInterface extends ArrayAccess, JsonSerializable, Stringable
+interface ConfigInterface extends ArrayAccess, IteratorAggregate, JsonSerializable, Stringable
 {
 	/**
 	 * Get the name of the underlying Config file.
