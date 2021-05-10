@@ -2,25 +2,27 @@
 
 namespace FigTree\Config;
 
-use FigTree\Exceptions\UnreadablePathException;
-use FigTree\Config\Exceptions\{
-	InvalidConfigFileException,
-};
+use ArrayIterator;
+use Traversable;
 use FigTree\Exceptions\{
 	InvalidFileException,
 	InvalidPathException,
+	UnreadablePathException,
 };
-use FigTree\Config\Concerns\ArrayAccessData;
+use FigTree\Config\Exceptions\ReadOnlyException;
 use FigTree\Config\Contracts\ConfigInterface;
 
 abstract class AbstractConfig implements ConfigInterface
 {
-	use ArrayAccessData;
-
 	/**
 	 * Paths of underlying Config files.
 	 */
 	protected array $paths = [];
+
+	/**
+	 * Configuration data.
+	 */
+	protected array $data = [];
 
 	/**
 	 * Get the paths of the underlying Config files.
@@ -30,6 +32,69 @@ abstract class AbstractConfig implements ConfigInterface
 	public function getPaths(): array
 	{
 		return $this->paths;
+	}
+
+	/**
+	 * Magic method to handle key_exists/isset checks of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 *
+	 * @return boolean
+	 */
+	public function offsetExists($offset): bool
+	{
+		return key_exists($offset, $this->data);
+	}
+
+	/**
+	 * Magic method to handle retrieval of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 *
+	 * @return mixed
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->data[$offset] ?? null;
+	}
+
+	/**
+	 * Magic method to handle modification of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 * @param mixed $value
+	 *
+	 * @return void
+	 *
+	 * @throws \FigTree\Config\Exceptions\ReadOnlyException
+	 */
+	public function offsetSet($offset, $value): void
+	{
+		throw new ReadOnlyException($offset);
+	}
+
+	/**
+	 * Magic method to handle removal of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 *
+	 * @return void
+	 *
+	 * @throws \FigTree\Config\Exceptions\ReadOnlyException
+	 */
+	public function offsetUnset($offset): void
+	{
+		throw new ReadOnlyException($offset);
+	}
+
+	/**
+	 * Convert the object into an array.
+	 *
+	 * @return array
+	 */
+	public function toArray(): array
+	{
+		return $this->data;
 	}
 
 	/**
@@ -77,6 +142,16 @@ abstract class AbstractConfig implements ConfigInterface
 	public function __toString()
 	{
 		return serialize($this);
+	}
+
+	/**
+	 * Retrieve an external iterator.
+	 *
+	 * @return \Traversable
+	 */
+	public function getIterator(): Traversable
+	{
+		return new ArrayIterator($this->data);
 	}
 
 	/**
