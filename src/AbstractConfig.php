@@ -25,6 +25,11 @@ abstract class AbstractConfig implements ConfigInterface
 	protected array $data = [];
 
 	/**
+	 * Indicates if Config data has already been read.
+	 */
+	protected bool $isRead = false;
+
+	/**
 	 * Get the paths of the underlying Config files.
 	 *
 	 * @return array
@@ -43,6 +48,8 @@ abstract class AbstractConfig implements ConfigInterface
 	 */
 	public function offsetExists($offset): bool
 	{
+		$this->read();
+
 		return key_exists($offset, $this->data);
 	}
 
@@ -55,7 +62,7 @@ abstract class AbstractConfig implements ConfigInterface
 	 */
 	public function offsetGet($offset)
 	{
-		return $this->data[$offset] ?? null;
+		return $this->read()->data[$offset] ?? null;
 	}
 
 	/**
@@ -94,7 +101,7 @@ abstract class AbstractConfig implements ConfigInterface
 	 */
 	public function toArray(): array
 	{
-		return $this->data;
+		return $this->read()->data;
 	}
 
 	/**
@@ -156,7 +163,7 @@ abstract class AbstractConfig implements ConfigInterface
 
 	/**
 	 * Resolve the given filename of a Config file, add it to the
-	 * array of files, and read in its data.
+	 * array of files, and mark the Config as unread.
 	 *
 	 * @param string $fileName
 	 *
@@ -179,7 +186,31 @@ abstract class AbstractConfig implements ConfigInterface
 
 		$this->paths[] = $path;
 
-		return $this->readData($path);
+		$this->isRead = false;
+
+		return $this;
+	}
+
+	/**
+	 * Clear and read in all Config data.
+	 *
+	 * @return $this
+	 */
+	protected function read()
+	{
+		if ($this->isRead) {
+			return $this;
+		}
+
+		$this->data = [];
+
+		foreach ($this->paths as $path) {
+			$this->readFile($path);
+		}
+
+		$this->isRead = true;
+
+		return $this;
 	}
 
 	/**
@@ -192,7 +223,7 @@ abstract class AbstractConfig implements ConfigInterface
 	 * @throws \FigTree\Exceptions\UnreadablePathException
 	 * @throws \FigTree\Config\Exceptions\InvalidConfigFileException
 	 */
-	protected function readData(string $path): ConfigInterface
+	protected function readFile(string $path): ConfigInterface
 	{
 		if (!is_readable($path)) {
 			throw new UnreadablePathException($path);

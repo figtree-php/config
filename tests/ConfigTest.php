@@ -98,7 +98,7 @@ class ConfigTest extends AbstractTestCase
 
 		$this->expectException(InvalidConfigFileException::class);
 
-		$repo->get('invalid');
+		$repo->get('invalid')->toArray();
 	}
 
 	/**
