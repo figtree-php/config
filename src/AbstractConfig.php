@@ -2,25 +2,32 @@
 
 namespace FigTree\Config;
 
-use FigTree\Exceptions\UnreadablePathException;
-use FigTree\Config\Exceptions\{
-	InvalidConfigFileException,
-};
+use ArrayIterator;
+use Traversable;
 use FigTree\Exceptions\{
 	InvalidFileException,
 	InvalidPathException,
+	UnreadablePathException,
 };
-use FigTree\Config\Concerns\ArrayAccessData;
+use FigTree\Config\Exceptions\ReadOnlyException;
 use FigTree\Config\Contracts\ConfigInterface;
 
 abstract class AbstractConfig implements ConfigInterface
 {
-	use ArrayAccessData;
-
 	/**
 	 * Paths of underlying Config files.
 	 */
 	protected array $paths = [];
+
+	/**
+	 * Configuration data.
+	 */
+	protected array $data = [];
+
+	/**
+	 * Indicates if Config data has already been read.
+	 */
+	protected bool $isRead = false;
 
 	/**
 	 * Get the paths of the underlying Config files.
@@ -30,6 +37,71 @@ abstract class AbstractConfig implements ConfigInterface
 	public function getPaths(): array
 	{
 		return $this->paths;
+	}
+
+	/**
+	 * Magic method to handle key_exists/isset checks of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 *
+	 * @return boolean
+	 */
+	public function offsetExists($offset): bool
+	{
+		$this->read();
+
+		return key_exists($offset, $this->data);
+	}
+
+	/**
+	 * Magic method to handle retrieval of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 *
+	 * @return mixed
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->read()->data[$offset] ?? null;
+	}
+
+	/**
+	 * Magic method to handle modification of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 * @param mixed $value
+	 *
+	 * @return void
+	 *
+	 * @throws \FigTree\Config\Exceptions\ReadOnlyException
+	 */
+	public function offsetSet($offset, $value): void
+	{
+		throw new ReadOnlyException($offset);
+	}
+
+	/**
+	 * Magic method to handle removal of an array value on the object.
+	 *
+	 * @param string|int $offset
+	 *
+	 * @return void
+	 *
+	 * @throws \FigTree\Config\Exceptions\ReadOnlyException
+	 */
+	public function offsetUnset($offset): void
+	{
+		throw new ReadOnlyException($offset);
+	}
+
+	/**
+	 * Convert the object into an array.
+	 *
+	 * @return array
+	 */
+	public function toArray(): array
+	{
+		return $this->read()->data;
 	}
 
 	/**
@@ -80,8 +152,18 @@ abstract class AbstractConfig implements ConfigInterface
 	}
 
 	/**
+	 * Retrieve an external iterator.
+	 *
+	 * @return \Traversable
+	 */
+	public function getIterator(): Traversable
+	{
+		return new ArrayIterator($this->data);
+	}
+
+	/**
 	 * Resolve the given filename of a Config file, add it to the
-	 * array of files, and read in its data.
+	 * array of files, and mark the Config as unread.
 	 *
 	 * @param string $fileName
 	 *
@@ -104,7 +186,31 @@ abstract class AbstractConfig implements ConfigInterface
 
 		$this->paths[] = $path;
 
-		return $this->readData($path);
+		$this->isRead = false;
+
+		return $this;
+	}
+
+	/**
+	 * Clear and read in all Config data.
+	 *
+	 * @return $this
+	 */
+	protected function read()
+	{
+		if ($this->isRead) {
+			return $this;
+		}
+
+		$this->data = [];
+
+		foreach ($this->paths as $path) {
+			$this->readFile($path);
+		}
+
+		$this->isRead = true;
+
+		return $this;
 	}
 
 	/**
@@ -117,7 +223,7 @@ abstract class AbstractConfig implements ConfigInterface
 	 * @throws \FigTree\Exceptions\UnreadablePathException
 	 * @throws \FigTree\Config\Exceptions\InvalidConfigFileException
 	 */
-	protected function readData(string $path): ConfigInterface
+	protected function readFile(string $path): ConfigInterface
 	{
 		if (!is_readable($path)) {
 			throw new UnreadablePathException($path);
